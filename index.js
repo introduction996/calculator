@@ -1,7 +1,5 @@
 // this is gonna get real messy cuz at this moment that im writing this comment i dont have all the logic figured out
 function operate(sign, first, second) {
-    +first;
-    +second;
     switch (sign) {
         case '+':
             return first + second
@@ -38,3 +36,9 @@ numbers.forEach(number => {
         console.log(display.textContent.length)
     })
 })
+
+// clear button
+let clear = document.querySelector('.clear');
+clear.addEventListener('click', () => {
+    display.textContent = '';
+});
