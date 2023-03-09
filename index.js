@@ -74,7 +74,6 @@ let multiply = document.querySelector('#multiply');
 let divide = document.querySelector('#divide');
 let equals = document.querySelector('.equals');
 plus.addEventListener('click', () => {
-    currentOperation = 'plus';
     doClear = true;
     if (!isNaN(firstNumber) && firstNumber != 0) {
         secondNumber = cleanUp(display.textContent);
@@ -93,10 +92,10 @@ plus.addEventListener('click', () => {
         display.textContent = g;
         firstNumber = parseInt(g);
     }
+    currentOperation = 'plus';
 });
 
 minus.addEventListener('click', () => {
-    currentOperation = 'minus';
     doClear = true;
     if (!isNaN(firstNumber) && firstNumber != 0) {
         secondNumber = cleanUp(display.textContent);
@@ -115,10 +114,10 @@ minus.addEventListener('click', () => {
         display.textContent = g;
         firstNumber = parseInt(g);
     }
+    currentOperation = 'minus';
 });
 
 multiply.addEventListener('click', () => {
-    currentOperation = 'multiply';
     doClear = true;
     if (!isNaN(firstNumber) && firstNumber != 0) {
         secondNumber = cleanUp(display.textContent);
@@ -136,10 +135,10 @@ multiply.addEventListener('click', () => {
         display.textContent = g;
         firstNumber = parseInt(g);
     }
+    currentOperation = 'multiply';
 });
 
 divide.addEventListener('click', () => {
-    currentOperation = 'divide';
     doClear = true;
     if (!isNaN(firstNumber) && firstNumber != 0) {
         secondNumber = cleanUp(display.textContent);
@@ -152,22 +151,14 @@ divide.addEventListener('click', () => {
             display.textContent = 'cant divide by 0';
             currentOperation = null;
         } else {
-            result = String(operate(currentOperation, firstNumber, secondNumber));
-            let g;
-            if (Number.isInteger(result)) {
-                resultArr = result.split('');
-                for (let i = resultArr.length - 3; i > 0; i-=3) {
-                    resultArr.splice(i, 0, '\'');
-                }
-                g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
-            } else {
-                g = parseInt(g).toFixed(5);
-            }
-
+            result = operate(currentOperation, firstNumber, secondNumber);
+            let g = Number(result).toFixed(5);
             display.textContent = g;
-            firstNumber = parseInt(g);
+            firstNumber = Number(g);
         }
     }
+
+    currentOperation = 'divide';
 })
 
 
@@ -175,12 +166,17 @@ equals.addEventListener('click', () => {
     doClear = true;
     secondNumber = cleanUp(display.textContent);
 
+    let g;
     result = String(operate(currentOperation, firstNumber, secondNumber));
-    resultArr = result.split('');
-    for (let i = resultArr.length - 3; i > 0; i-=3) {
-        resultArr.splice(i, 0, '\'');
+    if (currentOperation == 'divide') {
+        g = Number(result).toFixed(5);
+    } else {
+        resultArr = result.split('');
+        for (let i = resultArr.length - 3; i > 0; i-=3) {
+            resultArr.splice(i, 0, '\'');
+        }
+        g = resultArr.join('');
     }
-    let g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
 
     if (secondNumber == 0 && currentOperation == 'divide') {
         display.textContent = 'cant divide by 0'
