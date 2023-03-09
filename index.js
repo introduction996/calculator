@@ -1,4 +1,4 @@
-// this is gonna get real messy cuz at this moment that im writing this comment i dont have all the logic figured out
+// this is a complete mess; i'm sorry if you wanted to read this code
 function operate(sign, first, second) {
     switch (sign) {
         case 'plus':
@@ -9,11 +9,14 @@ function operate(sign, first, second) {
             return first/second
         case 'multiply':
             return first*second
+        default:
+            return null
     }
 }
 
 let currentOperation;
-let firstNumber, secondNumber;
+let firstNumber = 0;
+let secondNumber = 'unselected';
 
 let doClear = false;
 let display = document.querySelector('.display');
@@ -23,7 +26,7 @@ numbers.forEach(number => {
         if (display.textContent.length == 13) {return}
         if (display.textContent == '' && number.textContent == 0) {return}
         if (doClear) {display.textContent = ''}
-        display.textContent += number.textContent
+        display.textContent += parseInt(number.textContent)
 
         // visually divide the number on screen for better readability
         let numberLength = display.textContent.split('');
@@ -45,10 +48,12 @@ numbers.forEach(number => {
     })
 })
 
-// clear button
+
 let clear = document.querySelector('.clear');
 clear.addEventListener('click', () => {
     display.textContent = '';
+    firstNumber = 0;
+    secondNumber = 'unselected';
 });
 
 
@@ -71,10 +76,100 @@ let equals = document.querySelector('.equals');
 plus.addEventListener('click', () => {
     currentOperation = 'plus';
     doClear = true;
+    if (!isNaN(firstNumber) && firstNumber != 0) {
+        secondNumber = cleanUp(display.textContent);
+    }
+    if ( firstNumber == 0) {
+        firstNumber = cleanUp(display.textContent);
+    }
 
-    firstNumber = cleanUp(display.textContent);
-    console.log(firstNumber);
+    if (secondNumber != 'unselected') {
+        result = String(operate(currentOperation, firstNumber, secondNumber));
+        resultArr = result.split('');
+        for (let i = resultArr.length - 3; i > 0; i-=3) {
+            resultArr.splice(i, 0, '\'');
+        }
+        let g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
+        display.textContent = g;
+        firstNumber = parseInt(g);
+    }
 });
+
+minus.addEventListener('click', () => {
+    currentOperation = 'minus';
+    doClear = true;
+    if (!isNaN(firstNumber) && firstNumber != 0) {
+        secondNumber = cleanUp(display.textContent);
+    }
+    if ( firstNumber == 0) {
+        firstNumber = cleanUp(display.textContent);
+    }
+
+    if (secondNumber != 'unselected') {
+        result = String(operate(currentOperation, firstNumber, secondNumber));
+        resultArr = result.split('');
+        for (let i = resultArr.length - 3; i > 0; i-=3) {
+            resultArr.splice(i, 0, '\'');
+        }
+        let g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
+        display.textContent = g;
+        firstNumber = parseInt(g);
+    }
+});
+
+multiply.addEventListener('click', () => {
+    currentOperation = 'multiply';
+    doClear = true;
+    if (!isNaN(firstNumber) && firstNumber != 0) {
+        secondNumber = cleanUp(display.textContent);
+    }
+    if ( firstNumber == 0) {
+        firstNumber = cleanUp(display.textContent);
+    }
+    if (secondNumber != 'unselected') {
+        result = String(operate(currentOperation, firstNumber, secondNumber));
+        resultArr = result.split('');
+        for (let i = resultArr.length - 3; i > 0; i-=3) {
+            resultArr.splice(i, 0, '\'');
+        }
+        let g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
+        display.textContent = g;
+        firstNumber = parseInt(g);
+    }
+});
+
+divide.addEventListener('click', () => {
+    currentOperation = 'divide';
+    doClear = true;
+    if (!isNaN(firstNumber) && firstNumber != 0) {
+        secondNumber = cleanUp(display.textContent);
+    }
+    if ( firstNumber == 0) {
+        firstNumber = cleanUp(display.textContent);
+    }
+    if (secondNumber != 'unselected') {
+        if (secondNumber == 0) {
+            display.textContent = 'cant divide by 0';
+            currentOperation = null;
+        } else {
+            result = String(operate(currentOperation, firstNumber, secondNumber));
+            let g;
+            if (Number.isInteger(result)) {
+                resultArr = result.split('');
+                for (let i = resultArr.length - 3; i > 0; i-=3) {
+                    resultArr.splice(i, 0, '\'');
+                }
+                g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
+            } else {
+                g = parseInt(g).toFixed(5);
+            }
+
+            display.textContent = g;
+            firstNumber = parseInt(g);
+        }
+    }
+})
+
 
 equals.addEventListener('click', () => {
     doClear = true;
@@ -85,5 +180,12 @@ equals.addEventListener('click', () => {
     for (let i = resultArr.length - 3; i > 0; i-=3) {
         resultArr.splice(i, 0, '\'');
     }
-    display.textContent = resultArr.join('');
+    let g = resultArr.join('') == 'NaN' || resultArr.join('') == 'und\'efi\'ned' ? '' : resultArr.join('');
+
+    if (secondNumber == 0 && currentOperation == 'divide') {
+        display.textContent = 'cant divide by 0'
+    } else {display.textContent = g}
+
+    firstNumber = 0;
+    secondNumber = 'unselected';
 });
